@@ -55,13 +55,16 @@ class KinesisAPI:
         except Exception as err:
             raise ValueError(f"! Failed to get Shard ID's !\n{err}")
 
-    def write_record(self):
+    def __str__(self) -> str:
+        return f"<KinesisAPI(stream_name={self.stream_name}, shard_ids={self.shard_ids})>"
+
+    def write_record(self) -> None:
         """
         Put a record into Kinesis Data Stream
         """
         pass
 
-    def write_records(self):
+    def write_records(self) -> None:
         """
         Put a list of records into Kinesis Data Stream
         Limit: 500 records
@@ -94,6 +97,15 @@ class KinesisAPI:
     def read_records():
         pass
 
+    def __del__(self):
+        self.__access_key_id = None
+        self.__secret_access_key = None
+        self.__region = None
+        self.client = None
+        self.session = None
+
 
 if __name__ == "__main__":
     print("TEST")
+    api = KinesisAPI("stock-stream")
+    print(api)
