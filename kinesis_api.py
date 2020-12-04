@@ -175,7 +175,7 @@ class KinesisAPI:
                 if debug:
                     print("")
                     print(f"[read_records] ShardIterator: {shard_iterator}")
-                    print(f"[read_records][{now.strftime('%Y/%m/%d %H:%M:%S')}] {record_resp}")
+                    print(f"[read_records][{now.strftime('%Y-%m-%d %H:%M:%S')}] {record_resp}")
                     print("")
 
                 if end_time < now or not record_resp:
@@ -194,6 +194,9 @@ class KinesisAPI:
                 print(f"! Error getting records from stream: {self.stream_name} !")
                 print(err, "\n")
                 break
+
+    def close(self):
+        self.__del__()
 
     def __del__(self):
         self.__access_key_id = None
