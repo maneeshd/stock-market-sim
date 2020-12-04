@@ -1,9 +1,13 @@
-#### Kafka Producer ####
-#### READ DATA FROM EXCEL AND SIMULATE REAL TIME Data Feed to Kafka ####
-
+"""
+Kafka Producer
+READ DATA FROM EXCEL AND SIMULATE REAL TIME Data Feed to Kafka
+"""
+from os import path
 import pandas as pd
 
-DATA_DIR_ROOT = "./data"
+
+CUR_DIR = path.realpath(path.dirname(__file__))
+DATA_DIR_ROOT = path.join(CUR_DIR, "data")
 
 
 def simulate(df):
@@ -51,4 +55,4 @@ def init():
 
 
 if __name__ == "__main__":
-    init()
+    print(DATA_DIR_ROOT)
