@@ -13,6 +13,7 @@ from kinesis_api import KinesisAPI
 
 
 CUR_DIR = path.realpath(path.dirname(__file__))
+BASE_DIR = path.dirname(CUR_DIR)
 DATA_DIR_ROOT = path.join(CUR_DIR, "data")
 
 CSV_FILENAME = "intraday-22-oct-merged.csv"

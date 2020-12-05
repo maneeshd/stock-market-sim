@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 
-DATA_DIR_ROOT = "./data"
+DATA_DIR_ROOT = "."
 
 
 def df_to_csv(df, fname):
@@ -49,7 +49,7 @@ def init():
             merged_df = merge_stocks(data_dir, data_files)
             # print(merged_df.head())
 
-            print(f"Writing merged file to csv...")
+            print("Writing merged file to csv...")
             df_to_csv(merged_df, merged_fname)
             print("Done")
 

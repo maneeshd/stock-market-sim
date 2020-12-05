@@ -30,12 +30,12 @@ class KinesisAPI:
 
         if self.__secret_access_key is None:
             raise ValueError(
-                "! AWS_ACCESS_KEY_ID was not found/not set in environment variables. !"
+                "! AWS_SECRET_ACCESS_KEY was not found/not set in environment variables. !"
             )
 
         if self.__region is None:
             raise ValueError(
-                "! AWS_ACCESS_KEY_ID was not found/not set in environment variables. !"
+                "! AWS_REGION_NAME was not found/not set in environment variables. !"
             )
 
         # Creating a boto3 session, connect to AWS
@@ -44,9 +44,6 @@ class KinesisAPI:
             aws_secret_access_key=self.__secret_access_key,
             region_name=self.__region
         )
-
-        # Shard Itertator type to read Records from Kinesis Data Stream
-        self.iterator_type = None
 
         # Get the kinesis client
         self.client = self.session.client("kinesis")
@@ -61,6 +58,15 @@ class KinesisAPI:
         except Exception as err:
             print("! Failed to get Shard ID's !")
             raise err
+
+        # Shard Itertator type to read Records from Kinesis Data Stream
+        self.iterator_type = None
+
+        # Shard Itertator type to read Records from Kinesis Data Stream
+        self.last_sequence_number = None
+
+    def set_last_sequence_number(self, sequence_number: str) -> None:
+        self.last_sequence_number = sequence_number
 
     def __str__(self) -> str:
         return f"<KinesisAPI(stream_name='{self.stream_name}', shard_ids={self.shard_ids})>"
@@ -120,7 +126,10 @@ class KinesisAPI:
         if iterator_type not in ["AFTER_SEQUENCE_NUMBER", "TRIM_HORIZON", "LATEST"]:
             iterator_type = "TRIM_HORIZON"
         if iterator_type == "AFTER_SEQUENCE_NUMBER" and not sequence_number:
-            iterator_type = "TRIM_HORIZON"
+            if self.last_sequence_number:
+                sequence_number = self.last_sequence_number
+            else:
+                iterator_type = "TRIM_HORIZON"
         self.iterator_type = iterator_type
         try:
             if iterator_type == "AFTER_SEQUENCE_NUMBER":
@@ -182,12 +191,18 @@ class KinesisAPI:
                     break
                 # yield data to outside calling iterator
                 for record in record_resp["Records"]:
-                    sequence_number = record["SequenceNumber"]
+                    self.last_sequence_number = record["SequenceNumber"]
                     try:
-                        yield {"data": loads(record["Data"]), "sequence_number": sequence_number}
+                        yield {
+                            "data": loads(record["Data"]),
+                            "sequence_number": self.last_sequence_number
+                        }
                     except Exception as err:
                         print(f"[WARN] Error deserializing record's data: {err}")
-                        yield {"data": record["Data"], "sequence_number": sequence_number}
+                        yield {
+                            "data": record["Data"],
+                            "sequence_number": self.last_sequence_number
+                        }
                 # Get next iterator for shard from previous request
                 shard_iterator = record_resp["NextShardIterator"]
             except Exception as err:
@@ -225,5 +240,5 @@ if __name__ == "__main__":
     # )
     # for record in api.read_records(time_limit=1.0, shard_iterator=shard_iter):
     #     data = record.get("data")
-    #     last_seq_num = record.get("sequence_number")
+    #     last_seq_num = record.get("sequence_number") # or api.last_sequence_number
     #     print(f"\nDATA: {data}\nLAST_SEQ_NUM: {last_seq_num}\n")
