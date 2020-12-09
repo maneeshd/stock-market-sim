@@ -342,7 +342,6 @@ class DynamoDbAPI():
             expr_attr_map = {}
             for key, value in expr_attr_values.items():
                 expr_attr_map[key] = self.__get_mapped_data(value)
-            print("expr_attr_map:", expr_attr_map)
             resp = self.db.scan(
                 TableName=self.table_name,
                 FilterExpression=filter,
