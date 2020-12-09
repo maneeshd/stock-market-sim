@@ -24,29 +24,55 @@ def push_data():
     pass
 
 
-def insert_db():
+def insert_db(db_api, data):
     """
     Insert to database
     """
-    pass
+    print("Writing to dynamo DB")
+    for row in data:
+        db_api.put(row)
+    return
 
 
-def parse_records():
+def parse_record(data):
     """
     parse consumed records
     """
-    pass
+    required_keys = ["minute", "symbol", "open",
+                     "high", "low", "close", "volume"]
+
+    # get relavent keys
+    parsed_data = {key: data[key] for key in required_keys}
+
+    # Create array structure
+    arrayed = []
+    for _ in range(10):
+        arrayed.append({key: '0' for key in required_keys})
+
+    # Unpack dict and load to array
+    for key, value in parsed_data.items():
+        for subkey in sorted(value):
+            arrayed[int(subkey) % 10][key] = value[subkey]
+
+    return arrayed
 
 
 def consume():
     api = KinesisAPI(stream_name=KINESIS_STREAM_NAME)
-
+    db_api = DynamoDbAPI(DYNAMO_DB_TABLE)
     last_seq_num = ""
 
     for record in api.read_records(time_limit=1.0):
         data = record.get("data")
         last_seq_num = record.get("sequence_number")
-        print(f"\nDATA: {data}\nLAST_SEQ_NUM: {last_seq_num}\n")
+        # print(f"\nDATA: {data}\nLAST_SEQ_NUM: {last_seq_num}\n")
+        print("---------------------------")
+        parsed_data = parse_record(data)
+        print(parsed_data)
+        insert_db(db_api, parsed_data)
+        print("---------------------------")
+
+    starttime = time.time()
 
     while True:
         print("Retrieving...")
@@ -58,10 +84,15 @@ def consume():
         for record in api.read_records(time_limit=1.0, shard_iterator=shard_iter):
             data = record.get("data")
             last_seq_num = record.get("sequence_number")
-            print(f"\nDATA: {data}\nLAST_SEQ_NUM: {last_seq_num}\n")
+            # print(f"\nDATA: {data}\nLAST_SEQ_NUM: {last_seq_num}\n")
+            print("---------------------------")
+            parsed_data = parse_record(data)
+            print(parsed_data)
+            insert_db(db_api, parsed_data)
+            print("---------------------------")
 
         print("Sleeping...")
-        time.sleep(60)
+        time.sleep(60.0 - ((time.time() - starttime) % 60.0))
 
 
 if __name__ == "__main__":

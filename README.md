@@ -4,8 +4,8 @@
 
 ### Installing libraries
 
-`$ python -m venv env`
-`$ source env/bin/activate`
+`$ python -m venv env`\
+`$ source env/bin/activate`\
 `$ pip install -r requirements.txt`
 
 ### Setting AWS Access Keys in Environment Variables
