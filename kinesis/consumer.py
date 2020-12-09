@@ -7,10 +7,14 @@ Consumer for AWS Kinesis Stock Data Stream
 """
 from datetime import datetime
 import time
-from kinesis_api import KinesisAPI
+from kinesis_api import KinesisAPI, DynamoDbAPI
+
 
 KINESIS_STREAM_NAME = "stock-stream"
 KINESIS_SHARD_PARTITION_KEY = "stock"
+DYNAMO_DB_TABLE = "stock-stream-data"
+DYNAMO_DB_PARTITION_KEY = "symbol"
+SYNAMO_DB_SORT_KEY = "minute"
 
 
 def push_data():
@@ -36,6 +40,8 @@ def parse_records():
 
 def consume():
     api = KinesisAPI(stream_name=KINESIS_STREAM_NAME)
+
+    last_seq_num = ""
 
     for record in api.read_records(time_limit=1.0):
         data = record.get("data")
