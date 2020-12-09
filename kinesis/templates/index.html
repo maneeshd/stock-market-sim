@@ -12,13 +12,20 @@
     <h1>SocketIO Test</h1>
     <h3>Message Recieved: <code id='msg'></code></h3>
     <script type="text/javascript" charset="utf-8">
-        var socket = io();
-        socket.on('connect', function () {
-            socket.emit('message', 'Connected');
+        var socket = io('/api/socket.io');
 
-            socket.on('graph_data', (data) => {
-                document.getElementById('msg').innerHTML = JSON.stringify(data);
-            });
+        socket.on('connect', () => {
+            console.log(`SocketIO: Connected! (${socket.id})`);
+            socket.emit('message', 'Connected');
+        }).emit(
+            'get_graph_data', 'AAPL'
+        ).on('graph_data', (data) => {
+            document.getElementById('msg').innerHTML = JSON.stringify(data);
+        });
+
+        socket.on('diconnect', () => {
+            socket.emit('disconnect');
+            console.log('SocketIO: Disconnected!');
         });
     </script>
 </body>
