@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocketIO Test</title>
+    <script src="static/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>SocketIO Test</h1>
+    <h3>Message Recieved: <code id='msg'></code></h3>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+        socket.on('connect', function () {
+            socket.emit('message', 'Connected');
+
+            socket.on('graph_data', (data) => {
+                document.getElementById('msg').innerHTML = JSON.stringify(data);
+            });
+        });
+    </script>
+</body>
+
+</html>
