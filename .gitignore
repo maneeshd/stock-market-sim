@@ -133,3 +133,4 @@ dmypy.json
 .node_modules/
 node_modules/
 .eslintcache
+.DS_STORE
