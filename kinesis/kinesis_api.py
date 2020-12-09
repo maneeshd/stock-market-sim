@@ -324,7 +324,13 @@ class DynamoDbAPI():
             "item": resp.get("Item")
         }
 
-    def get_all(self, filter: str = None, expr_attr_values: dict = None) -> dict:
+    def get_all(
+        self,
+        projection_expr: str = None,
+        expr_attr_names: dict = None,
+        filter: str = None,
+        expr_attr_values: dict = None
+    ) -> dict:
         """
         Get all items from DynamoDB table
         Limit rows using filter string
@@ -336,19 +342,24 @@ class DynamoDbAPI():
 
         # ExpressionAttributeValues
         expr_attr_vals = {":aapl": "AAPL"}
+
+        projection_expr="symbol, #o, #m",
+        expr_attr_names={"#o": "open", "#m": "minute"},
         """
-        resp = {}
+        kwargs = {"TableName": self.table_name}
+
+        if projection_expr and expr_attr_names:
+            kwargs["ProjectionExpression"] = projection_expr
+            kwargs["ExpressionAttributeNames"] = expr_attr_names
+
         if filter and expr_attr_values:
             expr_attr_map = {}
             for key, value in expr_attr_values.items():
                 expr_attr_map[key] = self.__get_mapped_data(value)
-            resp = self.db.scan(
-                TableName=self.table_name,
-                FilterExpression=filter,
-                ExpressionAttributeValues=expr_attr_map
-            )
-        else:
-            resp = self.db.scan(TableName=self.table_name)
+            kwargs["FilterExpression"] = filter
+            kwargs["ExpressionAttributeValues"] = expr_attr_map
+
+        resp = self.db.scan(**kwargs)
         return {
             "request_id": resp.get("ResponseMetadata", {}).get("RequestId"),
             "status_code": resp.get("ResponseMetadata", {}).get("HTTPStatusCode"),
@@ -414,8 +425,15 @@ if __name__ == "__main__":
     #     "minute": "09:30"
     # }))
 
+    from pprint import pprint
     # Readd all data from db table
-    # print(db_api.get_all(
-    #     filter="symbol = :aapl",
-    #     expr_attr_values={":aapl": "AAPL"}
-    # ))
+    pprint(db_api.get_all(
+        # select only these columns
+        projection_expr="symbol, #m, #o",
+        # placeholders for reserved keyword clashes in DynamoDB
+        expr_attr_names={"#m": "minute", "#o": "open"},
+        # After fetching all rows apply this filter
+        filter="symbol = :aapl",
+        # placeholder for value comparision in filter
+        expr_attr_values={":aapl": "AAPL"}
+    ), indent=2)

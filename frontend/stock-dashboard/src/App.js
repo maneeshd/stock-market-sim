@@ -1,25 +1,14 @@
-import logo from './assets/logo.svg';
-import './assets/App.css';
+import TradingViewWidget, { Themes } from 'react-tradingview-widget';
+import { Container } from 'react-bootstrap';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+    <Container className='py-4'>
+      <TradingViewWidget
+        symbol="NASDAQ:AAPL"
+        theme={Themes.DARK}
+        locale="en"
+      />
+    </Container>
+);
 
 export default App;

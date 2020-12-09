@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, send, emit
 from kinesis_api import DynamoDbAPI
 from time import sleep
 
-stocks = ["AAPL", "GOOGL", "NVDA", "FB", "QCOM", "MSFT", "AMZN", "NFLX", "TSLA", "INTC"]
+
 DYNAMO_DB_TABLE = "stock-stream-data"
 DYNAMO_DB_PARTITION_KEY = "symbol"
 SYNAMO_DB_SORT_KEY = "minute"
@@ -44,11 +44,13 @@ def error_handler(err):
     print(f"ERROR: {err}")
 
 
-@socketio.on("get_graph_data", namespace='/api/socket.io')
-def get_graph_data(symbol):
+@socketio.on("get_live_data", namespace='/api/socket.io')
+def get_live_data(symbol):
     print("Stock Symbol:", symbol)
 
     resp = db.get_all(
+        projection_expr="symbol, #m, #o",
+        expr_attr_names={"#m": "minute", "#o": "open"},
         filter="symbol = :stock",
         expr_attr_values={":stock": symbol}
     )
