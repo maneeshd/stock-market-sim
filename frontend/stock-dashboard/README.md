@@ -1,3 +1,10 @@
+# Dashboard
+
+Stock- streaming
+
+![Dashboard](https://github.com/maneeshd/stock-market-sim/edit/main/frontend/stock-dashboard/Stock -streaming.gif)
+![Stock](https://github.com/maneeshd/stock-market-sim/edit/main/frontend/stock-dashboard/stock graph.png)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
