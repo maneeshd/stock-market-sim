@@ -1,14 +1,18 @@
-import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import { Container } from 'react-bootstrap';
+import React, {Component} from 'react';
+import Layout from './components/Layout/Layout';
+import styles from './App.module.css';
 
-const App = () => (
-    <Container className='py-4'>
-      <TradingViewWidget
-        symbol="NASDAQ:AAPL"
-        theme={Themes.DARK}
-        locale="en"
-      />
-    </Container>
-);
+class App extends Component {
+  render (){
+  return (
+    <div>
+      <div className={styles.Nav}>stock-market-sim Candlestick Chart</div>
+      <Layout>
+      </Layout>
+      <div>&copy; </div>
+    </div>
+  );
+  }
+}
 
 export default App;
