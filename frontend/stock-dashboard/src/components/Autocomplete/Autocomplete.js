@@ -15,8 +15,8 @@ render(){
 return (
     <div style={boxStyle}>
     <Autocomplete
-        id="crypto-autocomplete"
-        options={this.props.top100Coins}
+        id="stock-autocomplete"
+        options={this.props.top100stocks}
         getOptionLabel={option => option.name}
         style={{ width: 350 }}
         onKeyDown={this.props.keySubmit}

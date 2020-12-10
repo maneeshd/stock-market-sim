@@ -4,19 +4,19 @@ import styles from './Candlestick.module.css';
 import AutocompleteUI from '../Autocomplete/Autocomplete';
 
 // options template
-const top100Coins = [];
+const top100stocks = [];
 
 class CandleStickChart extends Component {
 
 state = {
 // options template
-top100Coins: [],
+top100stocks: [],
 //error message
 errorMsg: '',
 //chart settings
 options: {
     title: {
-        text: 'NSE-RS',
+        text: 'Price-$',
         align: 'left'
     },
     xaxis: {
@@ -55,30 +55,93 @@ series: [{data:[{}]
 }]
 }
 
-// Fetch Top 100 coins from CoinCap
+// Fetch Top 100 stocks 
 componentWillMount(){
     fetch("https://api.coincap.io/v2/assets")
         .then(res => res.json())
         .then(
             (result) => {
-                const coins = result.data;
-                // coins.forEach(e => {
+                const stocks = result.data;
+                // stocks.forEach(e => {
                     //exclude tether
                     // if(e.id != 'tether'){
                     // let newObjs = {id: e.id, name: e.name, symbol: e.symbol}
                     console.log("newObj")
                     let newObj1  = {
                         "id": "balancer",
-                        "name": "DEMO1",
+                        "name": "AAPL",
                         "symbol": "BAL"
                     }
-                    top100Coins.push(newObj1)
+                    top100stocks.push(newObj1)
+
+                    let newObj2  = {
+                        "id": "balancer",
+                        "name": "AMZN",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj2)
+
+                    let newObj3  = {
+                        "id": "balancer",
+                        "name": "FB",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj3)
+
+                    let newObj4  = {
+                        "id": "balancer",
+                        "name": "GOOGL",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj4)
+
+                    let newObj5  = {
+                        "id": "balancer",
+                        "name": "INTC",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj5)
+
+                    let newObj6  = {
+                        "id": "balancer",
+                        "name": "MSFT",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj6)
+
+                    let newObj7  = {
+                        "id": "balancer",
+                        "name": "NFLX",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj7)
+
+                    let newObj8  = {
+                        "id": "balancer",
+                        "name": "NVDA",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj8)
+
+                    let newObj10  = {
+                        "id": "balancer",
+                        "name": "QCOM",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj10)
+
+                    let newObj9  = {
+                        "id": "balancer",
+                        "name": "TSLA",
+                        "symbol": "BAL"
+                    }
+                    top100stocks.push(newObj9)
                     // }
                 // });
-                let updatedCoins = [...top100Coins] // copy array to set state in an immutable fashion
+                let updatedstocks = [...top100stocks] // copy array to set state in an immutable fashion
 
                 this.setState({
-                    top100Coins: updatedCoins
+                    top100stocks: updatedstocks
                 })
             },
 
@@ -138,13 +201,13 @@ fetch("https://api.coincap.io/v2/candles?exchange=poloniex&interval=d1&baseId=bi
 keySubmit = (e)=>{
     if (e.keyCode == 13) {
         
-        let inputName = document.getElementById("crypto-autocomplete").value;
-        //check if the input is a valid crypto name
-        if (top100Coins.some(e => e.name == inputName)){
+        let inputName = document.getElementById("stock-autocomplete").value;
+        //check if the input is a valid stock name
+        if (top100stocks.some(e => e.name == inputName)){
         this.setState({
                 errorMsg: 'Loading...'
         });
-        let inputFilter = top100Coins.filter(e => e.name == inputName);
+        let inputFilter = top100stocks.filter(e => e.name == inputName);
         let inputSearch = inputFilter[0]['id'];
         console.log('value', inputFilter);
         console.log('value', inputSearch);
@@ -248,7 +311,7 @@ render() {
     return (
         <div>
             <div>
-                <AutocompleteUI keySubmit={this.keySubmit} top100Coins={this.state.top100Coins}/>
+                <AutocompleteUI keySubmit={this.keySubmit} top100stocks={this.state.top100stocks}/>
                 <i>{this.state.errorMsg}</i>
             </div>
             <div id="chart" className={styles.CandleStick}>
