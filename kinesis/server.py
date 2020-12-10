@@ -4,8 +4,10 @@ from flask.app import g
 from flask_socketio import SocketIO, send, emit
 from kinesis_api import DynamoDbAPI
 from time import sleep
+import pandas as pd
 
-stocks = ["AAPL", "GOOGL", "NVDA", "FB", "QCOM", "MSFT", "AMZN", "NFLX", "TSLA", "INTC"]
+stocks = ["AAPL", "GOOGL", "NVDA", "FB", "QCOM",
+          "MSFT", "AMZN", "NFLX", "TSLA", "INTC"]
 DYNAMO_DB_TABLE = "stock-stream-data"
 DYNAMO_DB_PARTITION_KEY = "symbol"
 SYNAMO_DB_SORT_KEY = "minute"
@@ -61,6 +63,22 @@ def get_graph_data(symbol):
             namespace="/api/socket.io"
         )
         sleep(60.0)
+
+
+@socketio.on("get_historical_data", namespace='/api/socket.io')
+def get_historical_data(symbol):
+    print("Stock Symbol:", symbol)
+
+    df = pd.read_csv(f'./data/historical_data/hist-{symbol}.csv')
+
+    jsondf = df.to_json()
+
+    emit(
+        "graph_data",
+        {"symbol": symbol, "data": jsondf},
+        json=True,
+        namespace="/api/socket.io"
+    )
 
 
 @socketio.on("disconnect", namespace="/api/socket.io")
