@@ -2,8 +2,8 @@
 
 Stock- streaming
 
-![Dashboard](https://github.com/maneeshd/stock-market-sim/edit/main/frontend/stock-dashboard/Stock -streaming.gif)
-![Stock](https://github.com/maneeshd/stock-market-sim/edit/main/frontend/stock-dashboard/stock graph.png)
+![Dashboard](https://github.com/maneeshd/stock-market-sim/blob/main/frontend/stock-dashboard/Stock%20-streaming.gif)
+![Stock](https://github.com/maneeshd/stock-market-sim/blob/main/frontend/stock-dashboard/stock%20graph.PNG)
 
 # Getting Started with Create React App
 
