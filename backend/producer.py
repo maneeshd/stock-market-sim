@@ -45,7 +45,6 @@ def simulate():
     start = datetime.now()
     print(f"[{start.strftime('%Y-%m-%d %H:%M:%S')}] Starting Kinesis producer...\n")
 
-    count = 0
     # Send records for a group of 10 companies every 1 minute
     for idx, group in df.groupby(df.index // 10):
         now = datetime.now()
@@ -55,10 +54,7 @@ def simulate():
             data=group.to_dict(),
             partition_key=KINESIS_SHARD_PARTITION_KEY
         )
-        count += 1
         print("")
-        if count == 7:
-            break
         sleep(60.0)
 
     end = datetime.now()

@@ -346,7 +346,7 @@ class DynamoDbAPI():
         projection_expr="symbol, #o, #m",
         expr_attr_names={"#o": "open", "#m": "minute"},
         """
-        kwargs = {"TableName": self.table_name}
+        kwargs = {"TableName": self.table_name, "Limit": 9999}
 
         if projection_expr and expr_attr_names:
             kwargs["ProjectionExpression"] = projection_expr
